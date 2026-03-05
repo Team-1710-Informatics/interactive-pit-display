@@ -81,6 +81,8 @@ open_view_screen() {
         --disable-session-crashed-bubble \
         --disable-on-before-shutdown \
         --kiosk \
+        --password-store=basic \
+        --use-mock-keychain \
         "$SERVER_URL/view" &
 
     VIEW_PID=$!
@@ -101,6 +103,8 @@ open_control_screen() {
         --disable-session-crashed-bubble \
         --disable-on-before-shutdown \
         --kiosk \
+        --password-store=basic \
+        --use-mock-keychain \
         "$SERVER_URL/control" &
 
     CONTROL_PID=$!
