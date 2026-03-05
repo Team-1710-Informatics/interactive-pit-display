@@ -3,6 +3,8 @@
 # Team 1710 Pit Display Startup Script
 # For Raspberry Pi OS with dual monitors
 
+cd "$(dirname "$(readlink -f "$0")")"
+
 # ==================== CONFIGURATION ====================
 SERVER_PORT=3000
 SERVER_URL="http://localhost:$SERVER_PORT"
@@ -35,6 +37,24 @@ kill_existing_chromium() {
     log "Killing existing Chromium instances..."
     pkill -f chromium 2>/dev/null
     sleep 1
+}
+
+wait_for_x() {
+    log "Waiting for X display to be ready..."
+
+    # Wait up to 60 seconds for X to be ready
+    for i in {1..60}; do
+        if xdpyinfo -display "$VIEW_DISPLAY" >/dev/null 2>&1; then
+            log "Display $VIEW_DISPLAY is ready!"
+            # Give X a moment to fully initialize
+            sleep 2
+            return 0
+        fi
+        sleep 1
+    done
+
+    log "WARNING: Display $VIEW_DISPLAY not ready after 60 seconds"
+    return 1
 }
 
 start_server() {
