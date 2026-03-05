@@ -7,22 +7,19 @@
 SERVER_PORT=3000
 SERVER_URL="http://localhost:$SERVER_PORT"
 
-# Primary display (large monitor - view screen)
-VIEW_DISPLAY=":0"           # X display
-VIEW_SCREEN="0"             # Screen number
-VIEW_WIDTH=1920             # Window width
-VIEW_HEIGHT=1080            # Window height
-VIEW_POS_X=0                # X position
-VIEW_POS_Y=0                # Y position
+# Display 0: Small touchscreen (control screen)
+CONTROL_DISPLAY=":0"       # X display
+CONTROL_WIDTH=800          # Window width
+CONTROL_HEIGHT=1280        # Window height
+CONTROL_POS_X=0            # X position
+CONTROL_POS_Y=0            # Y position
 
-# Secondary display (small touchscreen - control screen)
-# For Raspberry Pi with HDMI1, try :1 first, fall back to :0 with offset
-CONTROL_DISPLAY=":1"        # X display (try :1 for separate screen)
-CONTROL_SCREEN="0"          # Screen number
-CONTROL_WIDTH=800           # Window width (portrait touchscreen)
-CONTROL_HEIGHT=1024         # Window height
-CONTROL_POS_X=1920          # X position (offset if using single display)
-CONTROL_POS_Y=0             # Y position
+# Display 1: Large vertical display (view screen)
+VIEW_DISPLAY=":1"          # X display
+VIEW_WIDTH=1080            # Window width (vertical)
+VIEW_HEIGHT=1920           # Window height (vertical)
+VIEW_POS_X=0               # X position
+VIEW_POS_Y=0               # Y position
 
 # Wait times
 SERVER_STARTUP_WAIT=3       # Seconds to wait for server
@@ -70,7 +67,7 @@ start_server() {
 }
 
 open_view_screen() {
-    log "Opening view screen on primary display..."
+    log "Opening view screen on display $VIEW_DISPLAY (${VIEW_WIDTH}x${VIEW_HEIGHT})..."
 
     export DISPLAY=$VIEW_DISPLAY
 
@@ -91,26 +88,12 @@ open_view_screen() {
 }
 
 open_control_screen() {
-    log "Opening control screen on secondary display..."
+    log "Opening control screen on display $CONTROL_DISPLAY (${CONTROL_WIDTH}x${CONTROL_HEIGHT})..."
 
-    # First, try using separate display (:1)
     export DISPLAY=$CONTROL_DISPLAY
 
-    # Test if display :1 is available
-    if xdpyinfo -display $CONTROL_DISPLAY >/dev/null 2>&1; then
-        log "Using display $CONTROL_DISPLAY (separate X screen)"
-        CONTROL_POS_X=0
-        CONTROL_POS_Y=0
-    else
-        # Fall back to :0 with offset
-        log "Display $CONTROL_DISPLAY not available, using $VIEW_DISPLAY with offset"
-        export DISPLAY=$VIEW_DISPLAY
-        CONTROL_POS_X=1920
-        CONTROL_POS_Y=0
-    fi
-
     chromium \
-        --display=$DISPLAY \
+        --display=$CONTROL_DISPLAY \
         --window-position=$CONTROL_POS_X,$CONTROL_POS_Y \
         --window-size=$CONTROL_WIDTH,$CONTROL_HEIGHT \
         --no-sandbox \
