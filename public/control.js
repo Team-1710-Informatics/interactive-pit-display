@@ -2,7 +2,6 @@
 // Portrait-mode touchscreen for controlling the display
 
 const categoriesContainer = document.getElementById('categoriesContainer');
-const autoplayIndicator = document.getElementById('autoplayIndicator');
 
 // State
 let categories = [];
@@ -45,7 +44,6 @@ function resetInactivityTimer() {
 // Stop auto-play mode
 function stopAutoplay() {
   isAutoPlaying = false;
-  autoplayIndicator.classList.add('hidden');
 
   if (autoplayInterval) {
     clearInterval(autoplayInterval);
@@ -67,7 +65,6 @@ function stopAutoplay() {
 function startAutoplay() {
   console.log('Starting autoplay');
   isAutoPlaying = true;
-  autoplayIndicator.classList.remove('hidden');
 
   // Close all categories
   document.querySelectorAll('.category-card').forEach(card => {
@@ -272,7 +269,6 @@ eventSource.addEventListener('active-image', (event) => {
 eventSource.addEventListener('autoplay-started', (event) => {
   const data = JSON.parse(event.data);
   isAutoPlaying = true;
-  autoplayIndicator.classList.remove('hidden');
   activeCategory = data.categoryKey;
 });
 
