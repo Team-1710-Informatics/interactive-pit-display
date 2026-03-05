@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Configuration
+URL="https://example.com"
+DISPLAY_NUM=":0"          # Primary display (:0), use :1 for second display
+SCREEN_NUM="0"            # Screen number
+POSITION_X=0              # X position of window
+POSITION_Y=0              # Y position of window
+WIDTH=1920                # Window width
+HEIGHT=1080               # Window height
+
+# Export display
+export DISPLAY=$DISPLAY_NUM
+
+# Kill any existing Chromium instances (optional)
+pkill chromium-browser 2>/dev/null
+sleep 1
+
+# Launch Chromium with specific window position and size
+chromium-browser \
+  --display=$DISPLAY_NUM \
+  --window-position=$POSITION_X,$POSITION_Y \
+  --window-size=$WIDTH,$HEIGHT \
+  --start-fullscreen \        # Optional: fullscreen
+  --no-sandbox \
+  --kiosk \                   # Optional: kiosk mode (no UI chrome)
+  "$URL" &
+
+# Optional: Use wmctrl to move/resize after launch
+sleep 2
+wmctrl -r "Chromium" -e 0,$POSITION_X,$POSITION_Y,$WIDTH,$HEIGHT
