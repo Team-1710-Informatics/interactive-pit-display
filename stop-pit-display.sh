@@ -12,7 +12,7 @@ log "========================================"
 
 # Stop Chromium
 log "Stopping Chromium instances..."
-pkill -f chromium-browser 2>/dev/null
+pkill -f chromium 2>/dev/null
 pkill -f chromium 2>/dev/null
 sleep 1
 

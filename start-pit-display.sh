@@ -74,7 +74,7 @@ open_view_screen() {
 
     export DISPLAY=$VIEW_DISPLAY
 
-    chromium-browser \
+    chromium \
         --display=$VIEW_DISPLAY \
         --window-position=$VIEW_POS_X,$VIEW_POS_Y \
         --window-size=$VIEW_WIDTH,$VIEW_HEIGHT \
@@ -109,7 +109,7 @@ open_control_screen() {
         CONTROL_POS_Y=0
     fi
 
-    chromium-browser \
+    chromium \
         --display=$DISPLAY \
         --window-position=$CONTROL_POS_X,$CONTROL_POS_Y \
         --window-size=$CONTROL_WIDTH,$CONTROL_HEIGHT \
