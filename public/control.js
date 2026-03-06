@@ -2,6 +2,31 @@
 // Portrait-mode touchscreen for controlling the display
 
 const categoriesContainer = document.getElementById('categoriesContainer');
+const connectionStatus = document.getElementById('connectionStatus');
+const statusText = connectionStatus?.querySelector('.status-text');
+const autoplayIndicator = document.getElementById('autoplayIndicator');
+const helpModal = document.getElementById('helpModal');
+
+// Help modal functions
+function openHelp() {
+  if (helpModal) {
+    helpModal.classList.add('active');
+    resetInactivityTimer();
+  }
+}
+
+function closeHelp() {
+  if (helpModal) {
+    helpModal.classList.remove('active');
+  }
+}
+
+// Close help modal when clicking outside
+helpModal?.addEventListener('click', (e) => {
+  if (e.target === helpModal) {
+    closeHelp();
+  }
+});
 
 // State
 let categories = [];
@@ -57,6 +82,11 @@ function stopAutoplay() {
   autoplayStartTime = null;
   updateProgress(0);
 
+  // Hide autoplay indicator
+  if (autoplayIndicator) {
+    autoplayIndicator.classList.remove('active');
+  }
+
   // Notify server
   fetch('/api/stop-autoplay', { method: 'POST' });
 }
@@ -65,6 +95,11 @@ function stopAutoplay() {
 function startAutoplay() {
   console.log('Starting autoplay');
   isAutoPlaying = true;
+
+  // Show autoplay indicator
+  if (autoplayIndicator) {
+    autoplayIndicator.classList.add('active');
+  }
 
   // Close all categories
   document.querySelectorAll('.category-card').forEach(card => {
@@ -205,6 +240,12 @@ function toggleCategory(categoryKey) {
     // Toggle this one
     if (!isOpen) {
       card.classList.add('open');
+    } else {
+      // If we closed a category, always open TeamIdentity so there's always one expanded
+      const teamIdentityCard = document.querySelector(`[data-category="TeamIdentity"]`);
+      if (teamIdentityCard) {
+        teamIdentityCard.classList.add('open');
+      }
     }
   }
 }
@@ -239,6 +280,15 @@ const eventSource = new EventSource('/events?type=control');
 eventSource.addEventListener('connected', (event) => {
   console.log('SSE connected as control screen');
   const data = JSON.parse(event.data);
+
+  // Update connection status
+  if (connectionStatus) {
+    connectionStatus.classList.add('connected');
+    if (statusText) {
+      statusText.textContent = 'Connected';
+    }
+  }
+
   if (data.config) {
     config = data.config;
     console.log('Config loaded:', config);
@@ -249,6 +299,11 @@ eventSource.addEventListener('connected', (event) => {
       activeCategory = firstCategory.key;
       activeImageIndex = 0;
       updateActiveState();
+    }
+    // Expand Team Identity category by default
+    const teamIdentityCard = document.querySelector(`[data-category="TeamIdentity"]`);
+    if (teamIdentityCard) {
+      teamIdentityCard.classList.add('open');
     }
   }
   resetInactivityTimer();
