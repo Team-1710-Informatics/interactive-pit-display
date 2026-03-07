@@ -20,7 +20,7 @@ CONTROL_POS_Y=0            # Y position
 VIEW_DISPLAY=":1"          # X display
 VIEW_WIDTH=1080            # Window width (vertical)
 VIEW_HEIGHT=1920           # Window height (vertical)
-VIEW_POS_X=800               # X position
+VIEW_POS_X=0               # X position
 VIEW_POS_Y=0               # Y position
 
 # Wait times
