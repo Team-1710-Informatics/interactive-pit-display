@@ -7,7 +7,6 @@ export const categories = [
     key: 'TeamIdentity',
     displayName: 'Team Identity',
     images: [
-      { filename: 'TeamIdentity_We_Are_Team_1710.png', displayName: 'We Are Team 1710' },
       { filename: 'TeamIdentity_All_Together_Now.png', displayName: 'All Together Now' },
       { filename: 'TeamIdentity_Kansas_Coalition.png', displayName: 'Kansas Coalition' },
       { filename: 'TeamIdentity_Leadership_Award.png', displayName: 'Leadership Award' },
@@ -18,6 +17,10 @@ export const categories = [
     displayName: 'Robot Information',
     images: [
       { filename: 'RobotTechnical_Nimbus.png', displayName: 'Nimbus' },
+      { filename: 'RobotTechnical_ChassisElectronics.png', displayName: 'Chassis - Electronics' },
+      { filename: 'RobotTechnical_HopperSpindexer.png', displayName: 'Hopper - Spindexer' },
+      { filename: 'RobotTechnical_SwerveIntake.png', displayName: 'Swerve - Intake' },
+      { filename: 'RobotTechnical_ShooterFeeder.png', displayName: 'Shooter - Feeder' },
     ]
   },
   {
