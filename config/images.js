@@ -55,8 +55,8 @@ export const categories = [
 
 // Auto-play configuration
 export const autoplayConfig = {
-  inactivityTimeoutMs: 1 * 10 * 1000, // 3 minutes
-  imageIntervalMs: 10 * 1000, // 30 seconds
+  inactivityTimeoutMs: 2 * 60 * 1000, // 3 minutes
+  imageIntervalMs: 30 * 1000, // 30 seconds
   defaultCategoryKey: 'TeamIdentity',
 };
 
