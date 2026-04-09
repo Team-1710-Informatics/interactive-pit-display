@@ -103,6 +103,19 @@ open_view_screen() {
         --kiosk \
         --password-store=basic \
         --use-mock-keychain \
+        --disable-gpu \
+        --disable-software-rasterizer \
+        --disable-dev-shm-usage \
+        --disable-extensions \
+        --disable-background-timer-throttling \
+        --disable-backgrounding-occluded-windows \
+        --disable-renderer-backgrounding \
+        --disable-breakpad \
+        --no-first-run \
+        --disable-pinch \
+        --overscroll-history-navigation=0 \
+        --disable-features=TranslateUI \
+        --js-flags="--max-old-space-size=256" \
         "$SERVER_URL/view" &
 
     VIEW_PID=$!
@@ -125,6 +138,19 @@ open_control_screen() {
         --kiosk \
         --password-store=basic \
         --use-mock-keychain \
+        --disable-gpu \
+        --disable-software-rasterizer \
+        --disable-dev-shm-usage \
+        --disable-extensions \
+        --disable-background-timer-throttling \
+        --disable-backgrounding-occluded-windows \
+        --disable-renderer-backgrounding \
+        --disable-breakpad \
+        --no-first-run \
+        --disable-pinch \
+        --overscroll-history-navigation=0 \
+        --disable-features=TranslateUI \
+        --js-flags="--max-old-space-size=256" \
         "$SERVER_URL/control" &
 
     CONTROL_PID=$!
