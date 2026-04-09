@@ -17,10 +17,10 @@ CONTROL_POS_X=0            # X position
 CONTROL_POS_Y=0            # Y position
 
 # Display 1: Large vertical display (view screen)
-VIEW_DISPLAY=":1"          # X display
+VIEW_DISPLAY=":0"          # X display
 VIEW_WIDTH=1080            # Window width (vertical)
 VIEW_HEIGHT=1920           # Window height (vertical)
-VIEW_POS_X=0               # X position
+VIEW_POS_X=800               # X position
 VIEW_POS_Y=0               # Y position
 
 # Wait times
@@ -91,32 +91,22 @@ open_view_screen() {
 
     export DISPLAY=$VIEW_DISPLAY
 
-    chromium \
-        --display=$VIEW_DISPLAY \
-        --window-position=$VIEW_POS_X,$VIEW_POS_Y \
-        --window-size=$VIEW_WIDTH,$VIEW_HEIGHT \
-        --start-fullscreen \
-        --no-sandbox \
-        --disable-infobars \
-        --disable-session-crashed-bubble \
-        --disable-on-before-shutdown \
-        --kiosk \
-        --password-store=basic \
-        --use-mock-keychain \
-        --disable-gpu \
-        --disable-software-rasterizer \
-        --disable-dev-shm-usage \
-        --disable-extensions \
-        --disable-background-timer-throttling \
-        --disable-backgrounding-occluded-windows \
-        --disable-renderer-backgrounding \
-        --disable-breakpad \
-        --no-first-run \
-        --disable-pinch \
-        --overscroll-history-navigation=0 \
-        --disable-features=TranslateUI \
-        --js-flags="--max-old-space-size=256" \
-        "$SERVER_URL/view" &
+    sleep 4
+    firefox --kiosk "$SERVER_URL/view" &
+
+    #chromium \
+    #    --window-position=$VIEW_POS_X,$VIEW_POS_Y \
+    #    --window-size=$VIEW_WIDTH,$VIEW_HEIGHT \
+    #    --start-fullscreen \
+#       --user-data-dir=/tmp/chromium-view \
+ #       --no-sandbox \
+  #      --disable-infobars \
+   #     --disable-session-crashed-bubble \
+    #    --disable-on-before-shutdown \
+     #   --kiosk \
+      #  --password-store=basic \
+       # --use-mock-keychain \
+        # "$SERVER_URL/view" &
 
     VIEW_PID=$!
     log "View screen opened with PID: $VIEW_PID"
@@ -128,9 +118,9 @@ open_control_screen() {
     export DISPLAY=$CONTROL_DISPLAY
 
     chromium \
-        --display=$CONTROL_DISPLAY \
         --window-position=$CONTROL_POS_X,$CONTROL_POS_Y \
         --window-size=$CONTROL_WIDTH,$CONTROL_HEIGHT \
+        --user-data-dir=/tmp/chromium-control \
         --no-sandbox \
         --disable-infobars \
         --disable-session-crashed-bubble \
@@ -138,19 +128,6 @@ open_control_screen() {
         --kiosk \
         --password-store=basic \
         --use-mock-keychain \
-        --disable-gpu \
-        --disable-software-rasterizer \
-        --disable-dev-shm-usage \
-        --disable-extensions \
-        --disable-background-timer-throttling \
-        --disable-backgrounding-occluded-windows \
-        --disable-renderer-backgrounding \
-        --disable-breakpad \
-        --no-first-run \
-        --disable-pinch \
-        --overscroll-history-navigation=0 \
-        --disable-features=TranslateUI \
-        --js-flags="--max-old-space-size=256" \
         "$SERVER_URL/control" &
 
     CONTROL_PID=$!
