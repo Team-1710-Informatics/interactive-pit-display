@@ -52,7 +52,10 @@ const eventSource = new EventSource('/events?type=view');
 eventSource.addEventListener('connected', (event) => {
   console.log('SSE connected as view screen');
   const data = JSON.parse(event.data);
-  if (data.config?.defaultImage) {
+  // Restore current display state on connect/reconnect
+  if (data.currentState?.image?.filename) {
+    updateImage(data.currentState.image.filename);
+  } else if (data.config?.defaultImage) {
     updateImage(data.config.defaultImage.filename);
   }
 });
@@ -65,9 +68,13 @@ eventSource.addEventListener('display-image', (event) => {
   }
 });
 
-eventSource.onerror = (err) => {
-  console.log('SSE error:', err);
+eventSource.onerror = () => {
+  console.log('SSE connection lost, EventSource will auto-reconnect...');
 };
+
+eventSource.addEventListener('refresh', () => {
+  location.reload();
+});
 
 // Request fullscreen on page load
 document.addEventListener('DOMContentLoaded', () => {

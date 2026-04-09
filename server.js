@@ -30,6 +30,13 @@ const sseClients = new Set();
 // Track connected clients by type (view or control)
 const clientTypes = new Map();
 
+// Track current display state for reconnection recovery
+let currentDisplayState = {
+  categoryKey: autoplayConfig.defaultCategoryKey,
+  imageIndex: 0,
+  image: getDefaultImage()
+};
+
 // Broadcast message to all connected clients
 function broadcast(message) {
   const eventType = message.type || 'message';
@@ -80,6 +87,22 @@ function broadcastToControl(message) {
   }
 }
 
+// Heartbeat - keep SSE connections alive (prevents idle timeout disconnects)
+const HEARTBEAT_INTERVAL_MS = 15000; // 15 seconds
+
+setInterval(() => {
+  if (sseClients.size === 0) return;
+  const heartbeat = ':heartbeat\n\n';
+  for (const client of sseClients) {
+    try {
+      client.raw.write(heartbeat);
+    } catch (err) {
+      sseClients.delete(client);
+      clientTypes.delete(client);
+    }
+  }
+}, HEARTBEAT_INTERVAL_MS);
+
 // SSE endpoint - clients subscribe here for updates
 fastify.get('/events', async (request, reply) => {
   reply.raw.setHeader('Content-Type', 'text/event-stream');
@@ -93,7 +116,7 @@ fastify.get('/events', async (request, reply) => {
   sseClients.add(reply);
   clientTypes.set(reply, clientType);
 
-  // Send initial connection message with config
+  // Send initial connection message with config and current state
   reply.raw.write(`event: connected\ndata: ${JSON.stringify({
     type: 'connected',
     clientType,
@@ -101,7 +124,8 @@ fastify.get('/events', async (request, reply) => {
       categories,
       defaultImage: getDefaultImage(),
       autoplay: autoplayConfig
-    }
+    },
+    currentState: currentDisplayState
   })}\n\n`);
 
   // Remove client on close
@@ -155,6 +179,16 @@ fastify.post('/api/select-image', async (request, reply) => {
     imageIndex
   });
 
+  // Track current state for reconnection recovery
+  currentDisplayState = {
+    categoryKey,
+    imageIndex,
+    image: {
+      filename: image.filename,
+      displayName: image.displayName
+    }
+  };
+
   return { success: true };
 });
 
@@ -170,6 +204,16 @@ fastify.post('/api/start-autoplay', async (request, reply) => {
     type: 'autoplay-started',
     categoryKey: 'TeamIdentity'
   });
+
+  // Track current state for reconnection recovery
+  currentDisplayState = {
+    categoryKey: 'TeamIdentity',
+    imageIndex: 0,
+    image: {
+      filename: defaultCategory.images[0].filename,
+      displayName: defaultCategory.images[0].displayName
+    }
+  };
 
   // Broadcast first image to view screens
   broadcastToView({
@@ -206,6 +250,16 @@ fastify.post('/api/next-autoplay-image', async (request, reply) => {
   const nextIndex = (imageIndex + 1) % category.images.length;
   const image = category.images[nextIndex];
 
+  // Track current state for reconnection recovery
+  currentDisplayState = {
+    categoryKey: 'TeamIdentity',
+    imageIndex: nextIndex,
+    image: {
+      filename: image.filename,
+      displayName: image.displayName
+    }
+  };
+
   // Broadcast to view screens
   broadcastToView({
     type: 'display-image',
@@ -227,6 +281,12 @@ fastify.post('/api/next-autoplay-image', async (request, reply) => {
   });
 
   return { success: true, nextIndex };
+});
+
+// API: Refresh all displays
+fastify.post('/api/refresh', async (request, reply) => {
+  broadcast({ type: 'refresh' });
+  return { success: true };
 });
 
 // Control page redirect

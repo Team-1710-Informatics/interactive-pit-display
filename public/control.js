@@ -331,6 +331,21 @@ eventSource.addEventListener('autoplay-stopped', (event) => {
   stopAutoplay();
 });
 
-eventSource.onerror = (err) => {
-  console.log('SSE error:', err);
+eventSource.onerror = () => {
+  console.log('SSE connection lost, EventSource will auto-reconnect...');
+  if (connectionStatus) {
+    connectionStatus.classList.remove('connected');
+    if (statusText) {
+      statusText.textContent = 'Reconnecting...';
+    }
+  }
 };
+
+eventSource.addEventListener('refresh', () => {
+  location.reload();
+});
+
+// Refresh all displays
+async function refreshAll() {
+  await fetch('/api/refresh', { method: 'POST' });
+}

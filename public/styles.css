@@ -164,7 +164,9 @@ body {
   padding: 0.75rem 1rem;
   background: linear-gradient(to top, rgba(13, 17, 23, 0.95), transparent);
   display: flex;
+  align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .autoplay-indicator {
@@ -659,6 +661,39 @@ body {
 
 .control-main::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+/* Refresh button */
+.refresh-button {
+  position: absolute;
+  right: 1rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refresh-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(33, 150, 243, 0.4);
+  color: #ffffff;
+}
+
+.refresh-button:active {
+  background: rgba(33, 150, 243, 0.2);
+  transform: scale(0.95);
+}
+
+.refresh-button svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* Responsive adjustments */
