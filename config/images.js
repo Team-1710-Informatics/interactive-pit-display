@@ -16,6 +16,7 @@ export const categories = [
     key: 'RobotTechnical',
     displayName: 'Robot Information',
     images: [
+      { filename: 'RobotTechnical_Downpour.png', displayName: 'Robot Overview' },
       { filename: 'RobotTechnical_ChassisElectronics.png', displayName: 'Chassis - Electronics' },
       { filename: 'RobotTechnical_HopperShooter.png', displayName: 'Hopper - Shooter' },
       { filename: 'RobotTechnical_IntakeRollerFloor.png', displayName: 'Intake - Roller Floor' },
